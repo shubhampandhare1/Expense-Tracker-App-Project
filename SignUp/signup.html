@@ -11,7 +11,7 @@
     <h1>Xpense Tracker</h1>
     <div>
         <h3>Sign Up</h3>
-        <form onsubmit="signup(event)">
+        <form id="signup-form" onsubmit="signup(event)">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" value="Shubham" required>
             <label for="email">Email:</label>
@@ -21,6 +21,7 @@
             <input type="submit" value="Sign Up">
         </form>
         <a href="">Existing User - Login Here</a>
+        <div id="existing"></div>
     </div>
 
     <script src="signup.js"></script>
