@@ -1,13 +1,11 @@
 const User = require('../models/user');
-
+const bcrypt = require('bcryptjs');
 exports.createUser = async (req, res, next) => {
     try {
-        const name = req.body.name;
-        const email = req.body.email;
-        const password = req.body.password;
+        const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(400).json({ Error: 'Bad Parameters' })
+            return res.status(400).json({ Error: 'All fields are required' })
         }
 
         const userExist = await User.findOne({
@@ -18,13 +16,18 @@ exports.createUser = async (req, res, next) => {
             console.log('>>>>>>>>>>User Already Exist<<<<<<<<<<<<<<')
             return res.status(409).json({ error: 'User Already Exists' });
         }
-
-        const newUser = await User.create({
-            name: name,
-            email: email,
-            password: password
+        const saltrounds = 10;
+        bcrypt.hash(password, saltrounds, async (err, hash) => {
+            if (err) {
+                console.log('error at bcrypt.hash', err);
+            }
+            await User.create({
+                name: name,
+                email: email,
+                password: hash
+            })
+            res.status(201).json({ success: true, message: 'Account Created Successfully' });
         })
-        res.status(200).json({ success: true, message: 'Account Created Successfully' });
     }
     catch (err) {
         res.status(500).json({ err })
@@ -33,25 +36,26 @@ exports.createUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res, next) => {
     try {
-        const email = req.body.email;
-        const password = req.body.password;
-        const userExist = await User.findOne({
+        const { email, password } = req.body;
+        const userExist = await User.findAll({
             where: { email }
         })
 
-        if (!userExist) {
-            res.status(404).json({ success: false, message: 'User Not Found' });
+        if (userExist.length > 0) {
+            bcrypt.compare(password, userExist[0].password, (err, result) => {
+                if (err) {
+                    throw new Error('Something went wrong!');
+                }
+                if (result === true) {
+                    res.status(200).json({ success: true, message: 'User Login Successful' });
+                }
+                else {
+                    return res.status(401).json({ error: 'Password is incorrect' });
+                }
+            })
         }
         else {
-            const passwordMatch = await User.findOne({
-                where: { email, password }
-            })
-            if (!passwordMatch) {
-                res.status(401).json({ error: 'User Not Authorised' });
-            }
-            else {
-                res.json({ success: true, message: 'User Login Successful' });
-            }
+            return res.status(404).json({ success: false, message: 'User Not Found' });
         }
     } catch (error) {
         console.log('>>>>>>>>>Error at login User<<<<<<<<', error);
