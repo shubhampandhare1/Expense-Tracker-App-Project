@@ -16,7 +16,7 @@ exports.createUser = async (req, res, next) => {
 
         if (userExist) {
             console.log('>>>>>>>>>>User Already Exist<<<<<<<<<<<<<<')
-            return res.status(400).json({ error: 'User Already Exists' });
+            return res.status(403).json({ error: 'User Already Exists' });
         }
 
         const newUser = await User.create({
@@ -24,9 +24,28 @@ exports.createUser = async (req, res, next) => {
             email: email,
             password: password
         })
-        res.status(200).json({ newUser });
+        res.status(200).json({ success: true, message: 'Account Created Successfully' });
     }
     catch (err) {
         res.status(500).json({ err })
+    }
+}
+
+exports.loginUser = async (req, res, next) => {
+    try {
+        const email = req.body.email;
+        const password = req.body.password;
+        const userExist = await User.findOne({
+            where: { email, password }
+        })
+
+        if (!userExist) {
+            res.status(404).json({ success: false, message: 'Incorrect Credentials' });
+        }
+        else {
+            res.json({ success: true, message: 'User Login Successful' });
+        }
+    } catch (error) {
+        console.log('>>>>>>>>>Error at login User<<<<<<<<', error)
     }
 }
