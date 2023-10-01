@@ -9,6 +9,7 @@ async function login(e) {
         // console.log(response.data)
         if (response.data.success == true) {
             alert(response.data.message);
+            window.location.href = '../expense/expense.html';
         }
     }
     catch (err) {
