@@ -20,11 +20,11 @@ async function signup(event) {
         }
 
     } catch (err) {
-        console.log("User Exists", err.response.data.error)
+        console.log("User Exists", err)
         if (err.response.data.error) {
             let errDiv = document.createElement('div');
             let existing = document.getElementById('existing');
-            errDiv.innerHTML = `<div style="color:red">${err.response.data.error}</div>`;
+            errDiv.innerHTML = `<div style="color:red">${err.message}</div>`;
             existing.appendChild(errDiv);
         }
     }
