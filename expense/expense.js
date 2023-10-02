@@ -45,10 +45,18 @@ function showOnScreen(expense) {
     deleteBtn.innerText = 'Delete Element';
 
     deleteBtn.onclick = async () => {
-        const id = expense.id;
-        const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`, { headers: { "Authorization": token } })
-        expenses.removeChild(expenseAdd);
+        try {
+            const id = expense.id;
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`, { headers: { "Authorization": token } })
+            expenses.removeChild(expenseAdd);
+        } catch (error) {
+            let errDiv = document.createElement('div');
+            let errorDiv = document.getElementById('error');
+            errDiv.innerHTML = `<div style="color:red">Error:${error.message}</div>`;
+            errorDiv.appendChild(errDiv);
+        }
+
     }
 
     expenses.appendChild(expenseAdd);

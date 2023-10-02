@@ -36,7 +36,10 @@ exports.deleteExpense = async (req, res, next) => {
             res.status(404).json({ message: 'expense not found' })
         }
 
-        await Expense.destroy({ where: { id: expenseId, userId: req.user.id } });
+        const data = await Expense.destroy({ where: { id: expenseId, userId: req.user.id } });
+        if (data == 0) {
+            return res.status(404).json({ success: false, message: 'Expense belongs to someone else' })
+        }
         res.status(200).json({ messege: 'expense deleted successfully' });
     }
     catch (error) {
