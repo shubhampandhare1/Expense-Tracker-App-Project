@@ -3,10 +3,10 @@ const Expense = require('../models/expense');
 exports.getExpense = async (req, res, next) => {
     try {
 
-        const expenses = await Expense.findAll();
+        const expenses = await Expense.findAll({ where: { userId: req.user.id } });
         res.status(200).json({ expenses });
 
-    } 
+    }
     catch (error) {
         res.status(404).json({ err });
     }
@@ -15,33 +15,31 @@ exports.getExpense = async (req, res, next) => {
 exports.addExpense = async (req, res, next) => {
     try {
         const { amount, description, category } = req.body;
-
-        const newExpense = await Expense.create({
+        const newExpense = await req.user.createExpense({
             amount,
             description,
-            category
+            category,
         })
 
         res.status(200).json({ newExpense });
     }
     catch (err) {
-        res.status(500).json({err});
+        res.status(500).json({ error: err });
     }
 }
 
 exports.deleteExpense = async (req, res, next) => {
     try {
-        const delId = req.params.id;
-        const delExp = await Expense.findByPk(delId);
+        const expenseId = req.params.id;
 
-        if(!delExp){
-            res.status(404).json({message:'expense not found'})
+        if (!expenseId) {
+            res.status(404).json({ message: 'expense not found' })
         }
 
-        await delExp.destroy();
-        res.status(200).json({messege: 'expense deleted successfully'});
+        await Expense.destroy({ where: { id: expenseId, userId: req.user.id } });
+        res.status(200).json({ messege: 'expense deleted successfully' });
     }
     catch (error) {
-        res.status(500).json({error});
+        res.status(500).json({ err: error });
     }
 }

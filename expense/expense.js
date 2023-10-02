@@ -1,9 +1,10 @@
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await axios.get('http://localhost:3000/expense/get-expense');
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3000/expense/get-expense', { headers: { "Authorization": token } });
 
         const expenses = response.data.expenses;
-        
+
         expenses.forEach(expense => {
             showOnScreen(expense);
         })
@@ -22,8 +23,8 @@ async function addExpense(event) {
             description: event.target.description.value,
             category: event.target.category.value
         }
-
-        const response = await axios.post('http://localhost:3000/expense/add-expense', expense);
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:3000/expense/add-expense', expense, { headers: { "Authorization": token } });
         showOnScreen(response.data.newExpense);
 
     } catch (error) {
@@ -43,10 +44,10 @@ function showOnScreen(expense) {
     let deleteBtn = document.createElement('button');
     deleteBtn.innerText = 'Delete Element';
 
-    deleteBtn.onclick = async () =>{
+    deleteBtn.onclick = async () => {
         const id = expense.id;
-
-        await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`)
+        const token = localStorage.getItem('token');
+        await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`, { headers: { "Authorization": token } })
         expenses.removeChild(expenseAdd);
     }
 

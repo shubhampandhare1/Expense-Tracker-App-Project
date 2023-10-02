@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 exports.createUser = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
@@ -13,7 +15,7 @@ exports.createUser = async (req, res, next) => {
         })
 
         if (userExist) {
-            console.log('>>>>>>>>>>User Already Exist<<<<<<<<<<<<<<')
+            // console.log('>>>>>>>>>>User Already Exist<<<<<<<<<<<<<<')
             return res.status(409).json({ error: 'User Already Exists' });
         }
         const saltrounds = 10;
@@ -47,7 +49,7 @@ exports.loginUser = async (req, res, next) => {
                     throw new Error('Something went wrong!');
                 }
                 if (result === true) {
-                    res.status(200).json({ success: true, message: 'User Login Successful' });
+                    res.status(200).json({ success: true, message: 'User Login Successful', token: generateAccessToken(userExist[0].id) });
                 }
                 else {
                     return res.status(401).json({ error: 'Password is incorrect' });
@@ -60,4 +62,8 @@ exports.loginUser = async (req, res, next) => {
     } catch (error) {
         console.log('>>>>>>>>>Error at login User<<<<<<<<', error);
     }
+}
+
+function generateAccessToken(id) {
+    return jwt.sign({ userId: id }, 'secretkey');
 }
