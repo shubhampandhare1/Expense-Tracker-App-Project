@@ -8,7 +8,7 @@ exports.getExpense = async (req, res, next) => {
 
     }
     catch (error) {
-        res.status(404).json({ err });
+        res.status(404).json({ error });
     }
 }
 

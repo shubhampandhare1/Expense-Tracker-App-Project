@@ -1,3 +1,5 @@
+// const Razorpay = require("razorpay");
+
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         const token = localStorage.getItem('token');
@@ -61,4 +63,32 @@ function showOnScreen(expense) {
 
     expenses.appendChild(expenseAdd);
     expenseAdd.appendChild(deleteBtn);
+}
+
+document.getElementById('rzp-button1').onclick = async (event) => {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: { "Authorization": token } });
+
+    let options = {
+        "key": response.data.key_id,    //Enter the KeyId generated from dahsboard
+        "order_id": response.data.order.orderid,    //For one time payment
+        //This handler function will handle the success payment
+        "handler": async function (response) {
+            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+                orderid: options.order_id,
+                paymentid: response.razorpay_payment_id,
+            }, { headers: { "Authorization": token } })
+            alert('You are Premium User Now!');
+        }
+    }
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+    event.preventDefault();
+    rzp1.on('payment.failed', function (response) {
+        axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+            orderid: options.order_id,
+            paymentid: response.error.reason,
+        }, { headers: { "Authorization": token } })
+        alert('Payment Failed => Try Again');
+    })
 }
