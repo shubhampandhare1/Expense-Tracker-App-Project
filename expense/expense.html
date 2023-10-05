@@ -9,6 +9,7 @@
 
 <body>
     <h1>Xpense Tracker</h1>
+    <div id="isPremium"></div>
     <div>
         <h3>Add Expense</h3>
         <form id="expense-form" onsubmit="addExpense(event)">
@@ -25,7 +26,7 @@
             </select>
             <input type="submit" value="Add Expense">
         </form>
-        <button id="rzp-button1" style="float: right; margin-right: 100px;">Buy Premium</button>
+        <button id="rzp-button1" style="float: right; margin-right: 100px; display: none;">Buy Premium</button>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     </div>
     <div id="error">

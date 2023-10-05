@@ -7,4 +7,6 @@ router.get('/premiummembership', userAuthenticate.authenticate, premiumControlle
 
 router.post('/updatetransactionstatus', userAuthenticate.authenticate, premiumController.updateTransactionStatus);
 
+router.get('/ispremium', userAuthenticate.authenticate, premiumController.showPremium);
+
 module.exports = router;

@@ -1,7 +1,7 @@
-// const Razorpay = require("razorpay");
 
 window.addEventListener('DOMContentLoaded', async () => {
     try {
+        showPremiumUser();
         const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:3000/expense/get-expense', { headers: { "Authorization": token } });
 
@@ -79,6 +79,7 @@ document.getElementById('rzp-button1').onclick = async (event) => {
                 paymentid: response.razorpay_payment_id,
             }, { headers: { "Authorization": token } })
             alert('You are Premium User Now!');
+            location.reload()
         }
     }
     const rzp1 = new Razorpay(options);
@@ -91,4 +92,23 @@ document.getElementById('rzp-button1').onclick = async (event) => {
         }, { headers: { "Authorization": token } })
         alert('Payment Failed => Try Again');
     })
+}
+
+const showPremiumUser = async () => {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:3000/purchase/ispremium', { headers: { "Authorization": token } })
+        .then((response) => {
+            console.log(response.data.user[0].isPremiumUser);
+            if (response.data.user[0].isPremiumUser == true) {
+                const premiumText = document.createElement('h4');
+                premiumText.innerText = 'Premium User';
+                premiumText.style.color = 'green';
+                document.getElementById('isPremium').append(premiumText);
+                document.getElementById('rzp-button1').style.display = 'none';
+            }
+            else {
+                document.getElementById('rzp-button1').style.display = 'block';
+            }
+        })
+        .catch(err => console.log('error at showPremiumUser', err));
 }
