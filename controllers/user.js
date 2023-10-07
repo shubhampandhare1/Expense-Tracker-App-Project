@@ -23,10 +23,10 @@ exports.createUser = async (req, res, next) => {
             if (err) {
                 console.log('error at bcrypt.hash', err);
             }
-            await User.create({
+            const newUser = await User.create({
                 name: name,
                 email: email,
-                password: hash
+                password: hash,
             })
             res.status(201).json({ success: true, message: 'Account Created Successfully' });
         })

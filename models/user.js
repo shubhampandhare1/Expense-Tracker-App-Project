@@ -22,7 +22,11 @@ const User = sequelize.define('users', {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    isPremiumUser: Sequelize.BOOLEAN,   
+    totalExpense: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+    },
+    isPremiumUser: Sequelize.BOOLEAN,
 })
 
 module.exports = User;

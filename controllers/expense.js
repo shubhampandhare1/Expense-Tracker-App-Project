@@ -20,6 +20,9 @@ exports.addExpense = async (req, res, next) => {
             description,
             category,
         })
+        const totalExpense = Number(req.user.totalExpense) + Number(amount);
+        
+        req.user.update({totalExpense:totalExpense});
 
         res.status(200).json({ newExpense });
     }

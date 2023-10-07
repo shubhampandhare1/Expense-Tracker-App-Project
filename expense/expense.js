@@ -119,15 +119,16 @@ const showPremiumUser = async () => {
         console.log('error at showPremiumUser', err)
     }
 }
-
+    
 document.getElementById('lb-button').addEventListener('click', async () => {
     const token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { 'Authorization': token } });
-    console.log(response.data)
+    
     const leaderboardList = document.getElementById('leaderboard');
-    for (let i = 0; i < response.data.length; i++) {
+    leaderboardList.innerHTML = '<h3>Leaderboard</h3>'
+    response.data.forEach((userDeatails) => {
         let leaderboardEle = document.createElement('li');
-        leaderboardEle.innerText = `Name- ${response.data[i].name} | Total Expense- ${response.data[i].totalExpense}`;
+        leaderboardEle.innerText = `Name- ${userDeatails.name} | Total Expense- ${userDeatails.totalExpense}`;
         leaderboardList.appendChild(leaderboardEle);
-    }
+    })
 })
