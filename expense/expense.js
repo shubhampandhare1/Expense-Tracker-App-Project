@@ -16,6 +16,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 })
 
+//To add expenses for the user
 async function addExpense(event) {
     try {
         event.preventDefault();
@@ -34,6 +35,7 @@ async function addExpense(event) {
     }
 }
 
+//to show expenses of the user on UI
 function showOnScreen(expense) {
 
     const expenses = document.getElementById('listOfExpenses');
@@ -65,6 +67,7 @@ function showOnScreen(expense) {
     expenseAdd.appendChild(deleteBtn);
 }
 
+//Buy Premium Button feature
 document.getElementById('rzp-button1').onclick = async (event) => {
     const token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: { "Authorization": token } });
@@ -79,7 +82,7 @@ document.getElementById('rzp-button1').onclick = async (event) => {
                 paymentid: response.razorpay_payment_id,
             }, { headers: { "Authorization": token } })
             alert('You are Premium User Now!');
-            location.reload()
+            showPremiumUser();
         }
     }
     const rzp1 = new Razorpay(options);
@@ -94,21 +97,37 @@ document.getElementById('rzp-button1').onclick = async (event) => {
     })
 }
 
+//Show premium user badge on UI
 const showPremiumUser = async () => {
-    const token = localStorage.getItem('token');
-    axios.get('http://localhost:3000/purchase/ispremium', { headers: { "Authorization": token } })
-        .then((response) => {
-            console.log(response.data.user[0].isPremiumUser);
-            if (response.data.user[0].isPremiumUser == true) {
-                const premiumText = document.createElement('h4');
-                premiumText.innerText = 'Premium User';
-                premiumText.style.color = 'green';
-                document.getElementById('isPremium').append(premiumText);
-                document.getElementById('rzp-button1').style.display = 'none';
-            }
-            else {
-                document.getElementById('rzp-button1').style.display = 'block';
-            }
-        })
-        .catch(err => console.log('error at showPremiumUser', err));
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3000/purchase/ispremium', { headers: { "Authorization": token } })
+        // console.log(response);
+        if (response.data.user.isPremiumUser == true) {
+            const premiumText = document.createElement('h4');
+            premiumText.innerText = 'Premium User';
+            premiumText.style.color = 'green';
+            document.getElementById('isPremium').append(premiumText);
+            document.getElementById('rzp-button1').style.display = 'none';
+            document.getElementById('lb-button').style.display = 'block';
+        }
+        else {
+            document.getElementById('rzp-button1').style.display = 'block';
+        }
+    }
+    catch (err) {
+        console.log('error at showPremiumUser', err)
+    }
 }
+
+document.getElementById('lb-button').addEventListener('click', async () => {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { 'Authorization': token } });
+    console.log(response.data)
+    const leaderboardList = document.getElementById('leaderboard');
+    for (let i = 0; i < response.data.length; i++) {
+        let leaderboardEle = document.createElement('li');
+        leaderboardEle.innerText = `Name- ${response.data[i].name} | Total Expense- ${response.data[i].totalExpense}`;
+        leaderboardList.appendChild(leaderboardEle);
+    }
+})

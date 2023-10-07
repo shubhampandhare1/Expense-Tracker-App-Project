@@ -1,6 +1,7 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
 const User = require('../models/user');
+const Expense = require('../models/expense');
 
 exports.purchasePremium = async (req, res, next) => {
     try {
@@ -65,10 +66,10 @@ exports.updateTransactionStatus = async (req, res, next) => {
 exports.showPremium = async (req, res, next) => {
     try {
         const user = await User.findAll({ where: { id: req.user.id } });
-        res.status(200).json({ success: true, user });
+        res.status(200).json({ success: true, user: user[0].dataValues });
 
     } catch (error) {
         console.log(error, 'error showpremium controller');
-        res.status(404).json({ success: false, message: 'User is not premium' })
+        res.status(404).json({ success: false, message: 'User is not found' })
     }
 }
