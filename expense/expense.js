@@ -109,7 +109,8 @@ const showPremiumUser = async () => {
             premiumText.style.color = 'green';
             document.getElementById('isPremium').append(premiumText);
             document.getElementById('rzp-button1').style.display = 'none';
-            document.getElementById('lb-button').style.display = 'block';
+            // document.getElementById('lb-button').style.display = 'block';
+            showleaderboard();
         }
         else {
             document.getElementById('rzp-button1').style.display = 'block';
@@ -119,16 +120,22 @@ const showPremiumUser = async () => {
         console.log('error at showPremiumUser', err)
     }
 }
-    
-document.getElementById('lb-button').addEventListener('click', async () => {
-    const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { 'Authorization': token } });
-    
-    const leaderboardList = document.getElementById('leaderboard');
-    leaderboardList.innerHTML = '<h3>Leaderboard</h3>'
-    response.data.forEach((userDeatails) => {
-        let leaderboardEle = document.createElement('li');
-        leaderboardEle.innerText = `Name- ${userDeatails.name} | Total Expense- ${userDeatails.totalExpense}`;
-        leaderboardList.appendChild(leaderboardEle);
-    })
-})
+
+function showleaderboard() {
+    const premiumFeature = document.getElementById('isPremium');
+    const leaderboardBtn = document.createElement('button');
+    leaderboardBtn.innerText = 'Show Leaderboard';
+    premiumFeature.appendChild(leaderboardBtn)
+    leaderboardBtn.onclick = async () => {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { 'Authorization': token } });
+        console.log(response)
+        const leaderboardList = document.getElementById('leaderboard');
+        leaderboardList.innerHTML = '<h3>Leaderboard</h3>';
+        response.data.forEach((userDeatails) => {
+            let leaderboardEle = document.createElement('li');
+            leaderboardEle.innerText = `Name- ${userDeatails.name} | Total Expense- ${userDeatails.totalExpense}`;
+            leaderboardList.appendChild(leaderboardEle);
+        })
+    }
+}
