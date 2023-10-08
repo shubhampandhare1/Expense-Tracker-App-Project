@@ -49,7 +49,7 @@ exports.loginUser = async (req, res, next) => {
                     throw new Error('Something went wrong!');
                 }
                 if (result === true) {
-                    res.status(200).json({ success: true, message: 'User Login Successful', token: generateAccessToken(userExist[0].id) });
+                    res.status(200).json({ success: true, message: 'User Login Successful', token: generateAccessToken(userExist[0].id, userExist[0].isPremiumUser) });
                 }
                 else {
                     return res.status(401).json({ error: 'Password is incorrect' });
@@ -64,6 +64,8 @@ exports.loginUser = async (req, res, next) => {
     }
 }
 
-function generateAccessToken(id) {
-    return jwt.sign({ userId: id }, process.env.SECRET_KEY);
+const generateAccessToken = (id, ispremiumuser) => {
+    return jwt.sign({ userId: id, ispremiumuser }, process.env.SECRET_KEY);
 }
+
+exports.generateAccessToken = generateAccessToken;
