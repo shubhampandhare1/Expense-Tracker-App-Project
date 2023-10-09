@@ -8,7 +8,7 @@ async function login(e) {
         const response = await axios.post('http://localhost:3000/user/login', user);
         // console.log(response.data.token)
         if (response.data.success == true) {
-            localStorage.setItem('token',response.data.token);
+            localStorage.setItem('token', response.data.token);
             alert(response.data.message);
             window.location.href = '../expense/expense.html';
         }
@@ -19,3 +19,7 @@ async function login(e) {
         console.log(err)
     }
 }
+
+document.getElementById('forgotPassword').addEventListener('click', () => {
+    window.location.href = '../forgotPassword/forgotPass.html';
+})
