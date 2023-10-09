@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
-const premiumRoute = require('./routes/premiumFeature')
+const premiumRoute = require('./routes/premiumFeature');
+const passwordRoutes = require('./routes/password');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
@@ -17,7 +18,8 @@ app.use(bodyParser.json({ extended: false }));
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
-app.use('/premium', premiumRoute)
+app.use('/premium', premiumRoute);
+app.use('/password', passwordRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
