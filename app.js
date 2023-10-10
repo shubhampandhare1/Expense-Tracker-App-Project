@@ -10,6 +10,7 @@ const passwordRoutes = require('./routes/password');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
+const Forgotpassword = require('./models/forgotPassword')
 require('dotenv').config();
 const app = express();
 app.use(cors());
@@ -25,6 +26,9 @@ User.hasMany(Expense);
 Expense.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(User);
 
 sequelize.sync()
     .then(() => {

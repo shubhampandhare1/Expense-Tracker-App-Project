@@ -6,7 +6,11 @@ function forgotPass(event) {
 
     axios.post('http://localhost:3000/password/forgotpassword', email)
         .then((response) => {
+            // console.log(response)
             if (response.data.success == true){
+                alert(response.data.message);
+            }
+            else{
                 alert(response.data.message);
             }
     })

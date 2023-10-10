@@ -64,13 +64,13 @@ exports.updateTransactionStatus = async (req, res, next) => {
     }
 }
 
-exports.showPremium = async (req, res, next) => {
-    try {
-        const user = await User.findAll({ where: { id: req.user.id } });
-        res.status(200).json({ success: true, user: user[0].dataValues });
+// exports.showPremium = async (req, res, next) => {
+//     try {
+//         const user = await User.findAll({ where: { id: req.user.id } });
+//         res.status(200).json({ success: true, user: user[0].dataValues });
 
-    } catch (error) {
-        console.log(error, 'error showpremium controller');
-        res.status(404).json({ success: false, message: 'User is not found' })
-    }
-}
+//     } catch (error) {
+//         console.log(error, 'error showpremium controller');
+//         res.status(404).json({ success: false, message: 'User is not found' })
+//     }
+// }
