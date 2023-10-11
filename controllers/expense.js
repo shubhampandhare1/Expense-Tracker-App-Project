@@ -16,11 +16,12 @@ exports.getExpense = async (req, res, next) => {
 exports.addExpense = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
-        const { amount, description, category } = req.body;
+        const { amount, description, category, date } = req.body;
         const newExpense = await req.user.createExpense({
             amount,
             description,
             category,
+            date
         }, { transaction: t })
         const totalExpense = Number(req.user.totalExpense) + Number(amount);
 

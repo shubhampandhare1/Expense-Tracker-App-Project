@@ -1,3 +1,4 @@
+const token = localStorage.getItem('token');
 function showPremiumUser() {
     const premiumText = document.createElement('h4');
     premiumText.innerText = 'Premium User';
@@ -18,7 +19,7 @@ function parseJwt(token) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const token = localStorage.getItem('token');
+
         const decodeToken = parseJwt(token);
         // console.log(decodeToken);
         if (decodeToken.ispremiumuser) {
@@ -30,7 +31,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const expenses = response.data.expenses;
 
         expenses.forEach(expense => {
-            showOnScreen(expense);
+            showExpenseInTable(expense);
         })
 
     } catch (error) {
@@ -42,19 +43,54 @@ window.addEventListener('DOMContentLoaded', async () => {
 async function addExpense(event) {
     try {
         event.preventDefault();
-
+        let today = new Date().toJSON().slice(0, 10);
         const expense = {
             amount: event.target.amount.value,
             description: event.target.description.value,
-            category: event.target.category.value
+            category: event.target.category.value,
+            date: today,
         }
-        const token = localStorage.getItem('token');
+
         const response = await axios.post('http://localhost:3000/expense/add-expense', expense, { headers: { "Authorization": token } });
-        showOnScreen(response.data.newExpense);
+        // showOnScreen(response.data.newExpense);
+        showExpenseInTable(response.data.newExpense);
 
     } catch (error) {
         console.log(error)
     }
+}
+
+function showExpenseInTable(expense) {
+    let tr = document.createElement('tr');
+    let td1 = tr.appendChild(document.createElement('td'));
+    let td2 = tr.appendChild(document.createElement('td'));
+    let td3 = tr.appendChild(document.createElement('td'));
+    let td4 = tr.appendChild(document.createElement('td'));
+
+    td1.innerHTML = expense.date;
+    td2.innerHTML = expense.amount;
+    td3.innerHTML = expense.description;
+    td4.innerHTML = expense.category;
+
+    //delete button
+    let td5 = document.createElement('button');
+    td5.innerText = 'Delete Expense';
+    td5.onclick = async () => {
+        try {
+            const id = expense.id;
+
+            await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`, { headers: { "Authorization": token } })
+            document.getElementById('tbody').removeChild(tr);
+        } catch (error) {
+            let errDiv = document.createElement('div');
+            let errorDiv = document.getElementById('error');
+            errDiv.innerHTML = `<div style="color:red">Error:${error.message}</div>`;
+            errorDiv.appendChild(errDiv);
+        }
+    }
+
+    tr.appendChild(td5);
+    document.getElementById('tbody').appendChild(tr);
 }
 
 //to show expenses of the user on UI
@@ -73,7 +109,7 @@ function showOnScreen(expense) {
     deleteBtn.onclick = async () => {
         try {
             const id = expense.id;
-            const token = localStorage.getItem('token');
+
             await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`, { headers: { "Authorization": token } })
             expenses.removeChild(expenseAdd);
         } catch (error) {
@@ -91,7 +127,6 @@ function showOnScreen(expense) {
 
 //Buy Premium Button feature
 document.getElementById('rzp-button1').onclick = async (event) => {
-    const token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: { "Authorization": token } });
 
     let options = {
@@ -124,7 +159,7 @@ document.getElementById('rzp-button1').onclick = async (event) => {
 //Show premium user badge on UI
 // const showPremiumUser = async () => {
 //     try {
-//         const token = localStorage.getItem('token');
+//       
 //         const response = await axios.get('http://localhost:3000/purchase/ispremium', { headers: { "Authorization": token } })
 //         // console.log(response);
 //         if (response.data.user.isPremiumUser == true) {
@@ -151,7 +186,7 @@ function showleaderboard() {
     leaderboardBtn.innerText = 'Show Leaderboard';
     premiumFeature.appendChild(leaderboardBtn)
     leaderboardBtn.onclick = async () => {
-        const token = localStorage.getItem('token');
+
         const response = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { 'Authorization': token } });
         // console.log(response)
         const leaderboardList = document.getElementById('leaderboard');
@@ -162,4 +197,14 @@ function showleaderboard() {
             leaderboardList.appendChild(leaderboardEle);
         })
     }
+}
+
+function download() {
+    axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } })
+    .then((response)=>{
+        console.log(response);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
 }
