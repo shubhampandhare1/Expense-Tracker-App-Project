@@ -1,7 +1,7 @@
 {
   "name": "expense-tracker---nodejs-project",
   "version": "1.0.0",
-  "description": "Expense Tracker App",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,8 +9,11 @@
   },
   "author": "Shubham Pandhare",
   "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
   "dependencies": {
-    "axios": "^1.5.1",
+    "aws-sdk": "^2.1473.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -22,8 +25,5 @@
     "sequelize": "^6.33.0",
     "sib-api-v3-sdk": "^8.5.0",
     "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
   }
 }

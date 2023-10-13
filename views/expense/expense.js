@@ -33,9 +33,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         expenses.forEach(expense => {
             showExpenseInTable(expense);
         })
+        recentdownload();
 
     } catch (error) {
-        console.log('error while fetching data', error);
+        showError(error);
     }
 })
 
@@ -56,7 +57,7 @@ async function addExpense(event) {
         showExpenseInTable(response.data.newExpense);
 
     } catch (error) {
-        console.log(error)
+        showError(error)
     }
 }
 
@@ -82,10 +83,7 @@ function showExpenseInTable(expense) {
             await axios.delete(`http://localhost:3000/expense/delete-expense/${id}`, { headers: { "Authorization": token } })
             document.getElementById('tbody').removeChild(tr);
         } catch (error) {
-            let errDiv = document.createElement('div');
-            let errorDiv = document.getElementById('error');
-            errDiv.innerHTML = `<div style="color:red">Error:${error.message}</div>`;
-            errorDiv.appendChild(errDiv);
+            showError(error);
         }
     }
 
@@ -200,11 +198,36 @@ function showleaderboard() {
 }
 
 function download() {
-    axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } })
-    .then((response)=>{
-        console.log(response);
-    })
-    .catch(err=>{
-        console.log(err);
-    })
+    axios.get('http://localhost:3000/expense/download', { headers: { "Authorization": token } })
+        .then((response) => {
+            if (response.status == 200) {
+                let a = document.createElement('a');
+                a.href = response.data.url;
+                a.download = 'myexpenses.csv';
+                a.click();
+            }
+            else {
+                throw new Error(response.message);
+            }
+        })
+        .catch(err => {
+            showError(err);
+        })
+}
+
+function recentdownload() {
+    axios.get('http://localhost:3000/expense/recentdownload', { headers: { "Authorization": token } })
+        .then((response) => {
+            let recentdownloads = document.getElementById('recentdownloads');
+            response.data.forEach((data) => {
+                let file = document.createElement('li');
+                file.innerHTML = `<a href="${data.fileUrl}">Downloaded On ${data.date}  </a>`;
+                recentdownloads.appendChild(file);
+            })
+        })
+        .catch(err => console.log(err));
+}
+
+function showError(err) {
+    document.getElementById('error').innerHTML = `<div style="color:Red;">${err}</div>`
 }
