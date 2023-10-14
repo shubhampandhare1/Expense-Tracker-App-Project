@@ -35,6 +35,15 @@
     <button onclick="download()" id="downloadexpense">Download Report</button>
     <div>
         <h3>Expenses</h3>
+        <div>
+            <span>Expense Per Page:</span>
+            <select name="expenseperpage" id="expenseperpage">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+            </select>
+        </div>
         <table id="table">
             <thead>
                 <tr>
@@ -46,7 +55,7 @@
                 </tr>
             </thead>
             <tbody id="tbody" class="tbody">
-
+                
             </tbody>
         </table>
         <div id="pagination">

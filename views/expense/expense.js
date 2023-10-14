@@ -22,9 +22,11 @@ function parseJwt(token) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     try {
+        document.querySelector('#expenseperpage').value = localStorage.getItem('expPerPage');
+        
         const page = 1;
-
-        const response = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`, { headers: { 'Authorization': token } })
+        const pagesize = localStorage.getItem('expPerPage')
+        const response = await axios.get(`http://localhost:3000/expense/get-expense?pagesize=${pagesize}&page=${page}`, { headers: { 'Authorization': token } })
 
         let expArr = response.data.expenses;
         expArr.forEach((exp) => {
@@ -71,7 +73,8 @@ function showPagination(pageData) {
 //show expenses on particular page that user clicks
 async function getExpenses(page) {
     try {
-        const response = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`, { headers: { "Authorization": token } })
+        const pagesize = localStorage.getItem('expPerPage');
+        const response = await axios.get(`http://localhost:3000/expense/get-expense?pagesize=${pagesize}&page=${page}`, { headers: { "Authorization": token } })
 
         const expArr = response.data.expenses;
         document.getElementById('tbody').innerHTML = '';
@@ -97,7 +100,7 @@ async function addExpense(event) {
         }
 
         const response = await axios.post('http://localhost:3000/expense/add-expense', expense, { headers: { "Authorization": token } });
-        
+
         showExpenseInTable(response.data.newExpense);
 
     } catch (error) {
@@ -227,3 +230,9 @@ async function recentdownload() {
 function showError(err) {
     document.getElementById('error').innerHTML = `<div style="color:Red;">${err}</div>`
 }
+
+document.querySelector('#expenseperpage').addEventListener("change", () => {
+    console.log('expenseperrow=>>>>>>>>', document.querySelector('#expenseperpage').value);
+    localStorage.setItem('expPerPage', document.querySelector('#expenseperpage').value);
+    location.reload();
+})
