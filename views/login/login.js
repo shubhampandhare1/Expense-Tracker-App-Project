@@ -19,7 +19,3 @@ async function login(e) {
         console.log(err)
     }
 }
-
-document.getElementById('forgotPassword').addEventListener('click', () => {
-    window.location.href = '../forgotPassword/forgotPass.html';
-})

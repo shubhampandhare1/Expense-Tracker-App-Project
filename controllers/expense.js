@@ -30,6 +30,9 @@ function uploadToS3(data, filename) {
 
 exports.downloadExpense = async (req, res, next) => {
     try {
+        if (!req.user.isPremiumUser) {
+            return res.status(401).json({ message: 'User is not a premium user', success: false })
+        }
         const expenses = await req.user.getExpenses();
         const stringifiedExpenses = JSON.stringify(expenses);
 
@@ -49,15 +52,35 @@ exports.downloadExpense = async (req, res, next) => {
 }
 
 exports.recentlyDownloadedFiles = async (req, res, next) => {
-    const recentdownloadedfiles = await DownloadedFiles.findAll({ where: { userId: req.user.id } });
-    res.status(200).json(recentdownloadedfiles)
+    try{
+        const recentdownloadedfiles = await DownloadedFiles.findAll({ where: { userId: req.user.id } });
+        res.status(200).json(recentdownloadedfiles)
+    } catch(error){
+        res.status(500).json(error)
+    }
 }
 
 exports.getExpense = async (req, res, next) => {
     try {
+        const page = +req.query.page || 1;
+        const itemsPerPage = 10;
+        const offset = (page - 1) * itemsPerPage;
 
-        const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-        res.status(200).json({ expenses });
+        const count = await Expense.count({ where: { userId: req.user.id } })
+        
+        const expenses = await Expense.findAll({
+            where: { userId: req.user.id },
+            offset: offset,
+            limit: itemsPerPage,
+        });
+        res.status(200).json({
+            expenses: expenses,
+            currPage: page,
+            hasNextPage: itemsPerPage * page < count,
+            nextPage: page + 1,
+            hasPrevPage: page > 1,
+            prevPage: page - 1,
+        });
 
     }
     catch (error) {

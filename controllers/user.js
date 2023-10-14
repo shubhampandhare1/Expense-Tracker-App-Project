@@ -57,10 +57,11 @@ exports.loginUser = async (req, res, next) => {
             })
         }
         else {
-            return res.status(404).json({ success: false, message: 'User Not Found' });
+            throw new Error('User Not Found')
         }
     } catch (error) {
         console.log('>>>>>>>>>Error at login User<<<<<<<<', error);
+        return res.status(404).json({ success: false, message: 'User Not Found' });
     }
 }
 
