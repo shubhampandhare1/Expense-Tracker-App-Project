@@ -22,17 +22,10 @@ function parseJwt(token) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        document.querySelector('#expenseperpage').value = localStorage.getItem('expPerPage');
-        
-        const page = 1;
-        const pagesize = localStorage.getItem('expPerPage')
-        const response = await axios.get(`http://localhost:3000/expense/get-expense?pagesize=${pagesize}&page=${page}`, { headers: { 'Authorization': token } })
+        document.querySelector('#expenseperpage').value = localStorage.getItem('expPerPage');   //show default no. of expenses per page
 
-        let expArr = response.data.expenses;
-        expArr.forEach((exp) => {
-            showExpenseInTable(exp);
-        })
-        showPagination(response.data);
+        const page = 1;
+        getExpenses(page);
 
         const decodeToken = parseJwt(token);
 
@@ -231,8 +224,8 @@ function showError(err) {
     document.getElementById('error').innerHTML = `<div style="color:Red;">${err}</div>`
 }
 
+//store number of expenses to show per page in local storage
 document.querySelector('#expenseperpage').addEventListener("change", () => {
-    console.log('expenseperrow=>>>>>>>>', document.querySelector('#expenseperpage').value);
     localStorage.setItem('expPerPage', document.querySelector('#expenseperpage').value);
     location.reload();
 })
