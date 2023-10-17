@@ -52,7 +52,7 @@ exports.loginUser = async (req, res, next) => {
                     res.status(200).json({ success: true, message: 'User Login Successful', token: generateAccessToken(userExist[0].id, userExist[0].isPremiumUser) });
                 }
                 else {
-                    return res.status(401).json({ error: 'Password is incorrect' });
+                    return res.status(401).json({ message: 'Password is incorrect' });
                 }
             })
         }

@@ -1,10 +1,11 @@
+const baseUrl = 'http://localhost:3000';
 function forgotPass(event) {
     event.preventDefault();
     const email = {
         email: event.target.email.value
     }
 
-    axios.post('http://localhost:3000/password/forgotpassword', email)
+    axios.post(`${baseUrl}/password/forgotpassword`, email)
         .then((response) => {
             // console.log(response)
             if (response.data.success == true){

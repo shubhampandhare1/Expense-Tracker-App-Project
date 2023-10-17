@@ -1,3 +1,4 @@
+const baseUrl = 'http://localhost:3000';
 async function signup(event) {
 
     try {
@@ -10,7 +11,7 @@ async function signup(event) {
         }
 
         // console.log(user);
-        const response = await axios.post('http://localhost:3000/user/signup', user);
+        const response = await axios.post(`${baseUrl}/user/signup`, user);
         // console.log('User Created',response.data);
         if (response.data.success == true) {
             let errDiv = document.createElement('div');
