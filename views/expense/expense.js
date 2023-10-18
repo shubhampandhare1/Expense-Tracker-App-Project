@@ -5,7 +5,7 @@ const baseUrl = 'http://localhost:3000';
 function showPremiumUser() {
     const premiumText = document.createElement('h4');
     premiumText.innerText = 'Premium User';
-    premiumText.className = 'm-0 text-info text-center';
+    premiumText.className = 'text-warning text-center';
     document.getElementById('isPremium').append(premiumText);
     document.getElementById('rzp-button1').style.display = 'none';
 }
@@ -32,7 +32,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         if (decodeToken.ispremiumuser) {
             showPremiumUser();  //premium feature
-            showleaderboard();  //premium feature
+            showleaderboard(page);  //premium feature
+        } else {
+            document.getElementById('rzp-button1').style.visibility = 'visible';
         }
         //shows list of reecntly downloaded expense files
         recentdownload();
@@ -170,15 +172,17 @@ document.getElementById('rzp-button1').onclick = async (event) => {
 }
 
 
-function showleaderboard() {
-    
+function showleaderboard(page) {
+
     document.getElementById('lb-button').style.visibility = 'visible';
     document.getElementById('show-lb').onclick = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/premium/showleaderboard`, { headers: { 'Authorization': token } });
-
+            // page = 1;
+            const response = await axios.get(`${baseUrl}/premium/showleaderboard?page=${page}`, { headers: { 'Authorization': token } });
+            console.log('.......................', response)
             const leaderboardList = document.getElementById('lb-tbody');
-            response.data.forEach((userDeatails) => {
+            leaderboardList.innerHTML = '';
+            response.data.leaderboardofUsers.forEach((userDeatails) => {
                 let tr = document.createElement('tr');
                 let td1 = document.createElement('td');
                 let td2 = document.createElement('td');
@@ -188,9 +192,36 @@ function showleaderboard() {
                 tr.appendChild(td2);
                 leaderboardList.appendChild(tr);
             })
+            lbPagination(response.data)
         } catch (error) {
             showError(error)
         }
+    }
+}
+
+function lbPagination(pageData) {
+    const pagination = document.getElementById('lbpagination');
+    pagination.innerHTML = '';
+    console.log('pagedata====', pageData.nextPage)
+    if (pageData.hasPrevPage) {
+        const btn3 = document.createElement('button');
+        btn3.className = 'btn btn-light'
+        btn3.innerHTML = `${pageData.prevPage}`;
+        btn3.addEventListener('click', () => showleaderboard(pageData.prevPage))
+        pagination.appendChild(btn3);
+    }
+    const btn1 = document.createElement('button');
+    btn1.className = 'btn btn-light m-1 btn-lg'
+    btn1.innerHTML = `${pageData.currPage}`;
+    btn1.addEventListener('click', () => showleaderboard(pageData.currPage))
+    pagination.appendChild(btn1);
+
+    if (pageData.hasNextPage) {
+        const btn2 = document.createElement('button');
+        btn2.className = 'btn btn-light'
+        btn2.innerHTML = `${pageData.nextPage}`;
+        btn2.addEventListener('click', () => showleaderboard(pageData.nextPage))
+        pagination.appendChild(btn2);
     }
 }
 

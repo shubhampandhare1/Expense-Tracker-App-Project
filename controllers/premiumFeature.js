@@ -63,10 +63,25 @@ exports.recentlyDownloadedFiles = async (req, res, next) => {
 
 exports.showLeaderboard = async (req, res, next) => {
     try {
+        const page = +req.query.page || 1;
+        const pagesize = 15;
+        
+        const count = await User.count();
+        const offset = (page - 1) * pagesize;
         const leaderboardofUsers = await User.findAll({
-            order: [[('totalExpense'), 'DESC']]
+            order: [[('totalExpense'), 'DESC']],
+            offset: offset,
+            limit: pagesize,
         })
-        res.status(200).json(leaderboardofUsers);
+        res.status(200).json({
+            leaderboardofUsers: leaderboardofUsers,
+            currPage: page,
+            hasNextPage: pagesize * page < count,
+            nextPage: page + 1,
+            hasPrevPage: page > 1,
+            prevPage: page - 1,
+            lastpage: Math.ceil(count / pagesize),
+        });
     } catch (error) {
         console.log(error);
     }
