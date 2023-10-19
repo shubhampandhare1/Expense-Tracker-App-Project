@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3000';
+const baseUrl = 'http://16.171.232.50:3000';
 function forgotPass(event) {
     event.preventDefault();
     const email = {
