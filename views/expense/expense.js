@@ -171,38 +171,39 @@ document.getElementById('rzp-button1').onclick = async (event) => {
     })
 }
 
+async function showlbpagination(page) {
+    try {
+        const response = await axios.get(`${baseUrl}/premium/showleaderboard?page=${page}`, { headers: { 'Authorization': token } });
+        const leaderboardList = document.getElementById('lb-tbody');
+        leaderboardList.innerHTML = '';
+        response.data.leaderboardofUsers.forEach((userDeatails) => {
+            let tr = document.createElement('tr');
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            td1.innerText = `${userDeatails.name}`;
+            td2.innerText = `${userDeatails.totalExpense}`;
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            leaderboardList.appendChild(tr);
+        })
+        lbPagination(response.data)
+    } catch (error) {
+        showError(error)
+    }
+}
+
 
 function showleaderboard(page) {
-
+    showlbpagination(page);
     document.getElementById('lb-button').style.visibility = 'visible';
     document.getElementById('show-lb').onclick = async () => {
-        try {
-            // page = 1;
-            const response = await axios.get(`${baseUrl}/premium/showleaderboard?page=${page}`, { headers: { 'Authorization': token } });
-            console.log('.......................', response)
-            const leaderboardList = document.getElementById('lb-tbody');
-            leaderboardList.innerHTML = '';
-            response.data.leaderboardofUsers.forEach((userDeatails) => {
-                let tr = document.createElement('tr');
-                let td1 = document.createElement('td');
-                let td2 = document.createElement('td');
-                td1.innerText = `${userDeatails.name}`;
-                td2.innerText = `${userDeatails.totalExpense}`;
-                tr.appendChild(td1);
-                tr.appendChild(td2);
-                leaderboardList.appendChild(tr);
-            })
-            lbPagination(response.data)
-        } catch (error) {
-            showError(error)
-        }
+        showlbpagination(1);
     }
 }
 
 function lbPagination(pageData) {
     const pagination = document.getElementById('lbpagination');
     pagination.innerHTML = '';
-    console.log('pagedata====', pageData.nextPage)
     if (pageData.hasPrevPage) {
         const btn3 = document.createElement('button');
         btn3.className = 'btn btn-light'
