@@ -1,5 +1,5 @@
 const token = localStorage.getItem('token');
-const baseUrl = 'http://16.171.232.50:3000';
+const baseUrl = 'http://16.16.184.66:3000';
 
 //show premium user badge on screen
 function showPremiumUser() {
