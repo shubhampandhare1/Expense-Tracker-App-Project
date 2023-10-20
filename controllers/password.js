@@ -39,7 +39,7 @@ exports.forgotPassword = async (req, res, next) => {
                 to: receivers,
                 subject: 'Reset Password',
                 htmlContent: `<h2>Reset Password</h2>
-                <a href='http://localhost:3000/password/resetpassword/${id}'>Click Here</a> to reset password`
+                <a href='http://16.171.232.50:3000/password/resetpassword/${id}'>Click Here</a> to reset password`
             })
                 .then((result) => {
                     // console.log(result)
@@ -75,7 +75,7 @@ exports.resetpassword = async (req, res, next) => {
                                             document.getElementById('reset').addEventListener('click',(event)=>{
                                                 event.preventDefault();
                                                 const newPassword = document.getElementById('newPassword').value;
-                                                axios.post('http://localhost:3000/password/updatepassword/${id}', {newPassword})
+                                                axios.post('http://16.171.232.50:3000/password/updatepassword/${id}', {newPassword})
                                                 .then((res)=>alert(res.data.message))
                                                 .catch(err=>console.log(err))
                                             })
