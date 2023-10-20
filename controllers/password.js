@@ -1,19 +1,20 @@
 const Sib = require('sib-api-v3-sdk');
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
-
+const path = require('path');
+const fs = require('fs');
 const User = require('../models/user');
 const Forgotpassword = require('../models/forgotPassword');
 const { UUIDV4 } = require('sequelize');
 exports.forgotPassword = async (req, res, next) => {
     try {
         const email = req.body.email;
-        
+
         const user = await User.findOne({ where: { email: email } })
 
         if (user) {
             const id = uuid.v4();
-            
+
             user.createForgotpassword({ id, isActive: true })
                 .then(res => console.log('create forgotPassword completed'))
                 .catch(err => {
@@ -64,29 +65,18 @@ exports.resetpassword = async (req, res, next) => {
         const forgotPassReq = await Forgotpassword.findOne({ where: { id: id } })
         if (forgotPassReq.isActive) {
             forgotPassReq.update({ isActive: false })
-            res.status(200).send(`  <html>
-                                        <form action="/password/updatepassword/${id}" method="GET">
-                                            <label for='newPassword'>Enter New Password</label>
-                                            <input name='newPassword' id='newPassword' type='password' required>
-                                            <button id="reset">Reset Password</button>
-                                        </form>
-                                        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
-                                        <script>
-                                            document.getElementById('reset').addEventListener('click',(event)=>{
-                                                event.preventDefault();
-                                                const newPassword = document.getElementById('newPassword').value;
-                                                axios.post('http://16.171.232.50:3000/password/updatepassword/${id}', {newPassword})
-                                                .then((res)=>alert(res.data.message))
-                                                .catch(err=>console.log(err))
-                                            })
-                                        </script>                                                                  
-                                    </html>`
-            )
+            const filePath = path.join(__dirname, '../views/forgotPassword/resetpassword.html')
+            const htmlContent = fs.readFileSync(filePath, 'utf-8');
+
+            const finalHtmlContent = htmlContent.replace('<%= id %>', id);
+
+            res.status(200).send(finalHtmlContent);
         }
         else {
             console.log('isActive ===== false')
         }
     } catch (error) {
+        console.log(error)
         res.json({ success: false, message: 'reset password controller failed' })
     }
 }
