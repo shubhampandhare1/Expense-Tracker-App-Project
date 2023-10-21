@@ -40,7 +40,7 @@ exports.forgotPassword = async (req, res, next) => {
                 to: receivers,
                 subject: 'Reset Password',
                 htmlContent: `<h2>Reset Password</h2>
-                <a href='http://16.16.184.66:3000/password/resetpassword/${id}'>Click Here</a> to reset password`
+                <a href='http://16.170.231.196:3000/password/resetpassword/${id}'>Click Here</a> to reset password`
             })
                 .then((result) => {
                     // console.log(result)
