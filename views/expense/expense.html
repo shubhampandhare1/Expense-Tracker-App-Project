@@ -60,6 +60,44 @@
         </div>
     </div>
 
+    <!-- Edit Expense Modal -->
+    <div class="modal fade modal-lg" id="editexpense">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container mt-3">
+                        <div class="row justify-content-center">
+                            <div>
+                                <form class="form-control p-4 rounded-4" id="expense-form" onsubmit="addExpense(event)">
+                                    <h3 class="mb-3">Update Expense</h3>
+                                    <div class="form-floating mb-2">
+                                        <input class="form-control" type="number" id="edit-amount" name="amount"
+                                            placeholder="Enter Amount">
+                                        <label class="text-black" for="amount">Expense Amount</label>
+                                    </div>
+                                    <div class="form-floating mb-2">
+                                        <input class="form-control" type="text" name="description" id="edit-description"
+                                            placeholder="Description">
+                                        <label class="text-black" for="description">Description</label>
+                                    </div>
+
+                                    <select name="category" id="edit-category" class="form-select">
+                                        <option value="food">Food</option>
+                                        <option value="fuel">Fuel</option>
+                                        <option value="electricity">Electricity</option>
+                                        <option value="movie">Movie</option>
+                                    </select>
+                                    <input class="btn btn-danger mt-3" type="submit" value="Update Expense">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Expense Modal -->
+
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 

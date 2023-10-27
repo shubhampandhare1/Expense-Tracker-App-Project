@@ -75,3 +75,27 @@ exports.deleteExpense = async (req, res, next) => {
         res.status(500).json({ err: error, message: 'expense not found' });
     }
 }
+
+exports.editExpense = async (req, res, next) => {
+    try{
+        const id = req.params.id;
+        const {amount, description, category} = req.body;
+        const expense = await Expense.findOne({ where: { id: id, userId: req.user.id } });
+    
+        if(expense){
+            await expense.update({
+                amount: amount,
+                description: description,
+                category: category,
+            })
+    
+            res.status(200).json({message:'Expense Updated Successfully'})
+        }
+        else{
+            throw new Error('Error at update expense controller')
+        }
+    }
+    catch(error){
+        res.status(404).json({message:'Expense Not found'});
+    }
+}

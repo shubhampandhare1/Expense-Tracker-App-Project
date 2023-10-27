@@ -40,14 +40,13 @@ exports.forgotPassword = async (req, res, next) => {
                 to: receivers,
                 subject: 'Reset Password',
                 htmlContent: `<h2>Reset Password</h2>
-                <a href='http://16.170.231.196:3000/password/resetpassword/${id}'>Click Here</a> to reset password`
+                <a href='http://localhost:3000/password/resetpassword/${id}'>Click Here</a> to reset password`
             })
                 .then((result) => {
                     // console.log(result)
                     res.status(202).json({ success: true, message: 'Reset Password Link sent successfully' });
                 })
                 .catch((err) => {
-                    console.error('SendinBlue Error:', err.response ? err.response.body : err.message);
                     throw new Error(err);
                 })
         } else {

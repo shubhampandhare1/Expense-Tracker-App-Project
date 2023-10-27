@@ -1,6 +1,6 @@
 const token = localStorage.getItem('token');
-const baseUrl = 'http://16.170.231.196:3000';
-
+const baseUrl = 'http://localhost:3000';
+let editId = null;
 //show premium user badge on screen
 function showPremiumUser() {
     const premiumText = document.createElement('h4');
@@ -97,10 +97,15 @@ async function addExpense(event) {
             category: event.target.category.value,
             date: today,
         }
+        if (editId == null) {
+            const response = await axios.post(`${baseUrl}/expense/add-expense`, expense, { headers: { "Authorization": token } });
 
-        const response = await axios.post(`${baseUrl}/expense/add-expense`, expense, { headers: { "Authorization": token } });
-
-        showExpenseInTable(response.data.newExpense);
+            showExpenseInTable(response.data.newExpense);
+        }
+        else {
+            await axios.put(`${baseUrl}/expense/edit-expense/${editId}`, expense, { headers: { "Authorization": token } })
+            location.reload();
+        }
 
     } catch (error) {
         showError(error)
@@ -120,10 +125,24 @@ function showExpenseInTable(expense) {
     td3.innerHTML = expense.description;
     td4.innerHTML = expense.category;
 
+    //edit buuton
+    let editBtn = document.createElement('button');
+    editBtn.innerText = 'Edit';
+    editBtn.id = 'edit-expense';
+    editBtn.classList = 'btn btn-primary btn-sm';
+    editBtn.setAttribute('data-bs-toggle', 'modal');
+    editBtn.setAttribute('data-bs-target', '#editexpense');
+    editBtn.onclick = async () => {
+        editId = expense.id;
+        document.getElementById('edit-amount').value = expense.amount;
+        document.getElementById('edit-description').value = expense.description;
+        document.getElementById('edit-category').value = expense.category;
+    }
+
     //delete button
     let delBtn = document.createElement('button');
     delBtn.innerText = 'Delete';
-    delBtn.classList = 'btn btn-danger btn-sm'
+    delBtn.classList = 'btn btn-danger btn-sm ms-2'
     delBtn.onclick = async () => {
         try {
             const id = expense.id;
@@ -135,6 +154,7 @@ function showExpenseInTable(expense) {
         }
     }
 
+    td5.appendChild(editBtn);
     td5.appendChild(delBtn);
     document.getElementById('tbody').appendChild(tr);
 }
