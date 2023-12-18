@@ -1,7 +1,5 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
-const User = require('../models/user');
-const Expense = require('../models/expense');
 const userController = require('./user');
 
 exports.purchasePremium = async (req, res, next) => {
@@ -37,7 +35,7 @@ exports.updateTransactionStatus = async (req, res, next) => {
             const p1 = await Order.findOne({ where: { orderid: orderid } }).then(async (order) => {
                 order.update({ paymentid: paymentid, status: 'SUCCESSFUL' })
             })
-            const p2 = req.user.update({ isPremiumUser: true })
+            const p2 = await req.user.update({ isPremiumUser: true })
 
             await Promise.all([p1, p2])
 
@@ -52,7 +50,7 @@ exports.updateTransactionStatus = async (req, res, next) => {
             const p1 = await Order.findOne({ where: { orderid: orderid } }).then(async (order) => {
                 await order.update({ paymentid: paymentid, status: 'FAILED' })
             })
-            const p2 = req.user.update({ isPremiumUser: false })
+            const p2 = await req.user.update({ isPremiumUser: false })
 
             await Promise.all([p1, p2])
 
@@ -63,14 +61,3 @@ exports.updateTransactionStatus = async (req, res, next) => {
         }
     }
 }
-
-// exports.showPremium = async (req, res, next) => {
-//     try {
-//         const user = await User.findAll({ where: { id: req.user.id } });
-//         res.status(200).json({ success: true, user: user[0].dataValues });
-
-//     } catch (error) {
-//         console.log(error, 'error showpremium controller');
-//         res.status(404).json({ success: false, message: 'User is not found' })
-//     }
-// }

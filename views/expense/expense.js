@@ -1,4 +1,4 @@
-const token = localStorage.getItem('token');
+let token = localStorage.getItem('token');
 const baseUrl = 'http://localhost:3000';
 let editId = null;
 //show premium user badge on screen
@@ -114,6 +114,7 @@ async function addExpense(event) {
         }
         else {
             await axios.put(`${baseUrl}/expense/edit-expense/${editId}`, expense, { headers: { "Authorization": token } })
+            editId = null;
             getExpenses(localStorage.getItem('currPage'));
         }
 
@@ -300,4 +301,12 @@ function showError(err) {
 document.querySelector('#expenseperpage').addEventListener("change", () => {
     localStorage.setItem('expPerPage', document.querySelector('#expenseperpage').value);
     location.reload();
+})
+
+
+document.getElementById('logout').addEventListener('click', () => {
+    localStorage.clear();
+    token = null;
+    location.reload();
+    window.location.href = '../login/login.html';
 })
