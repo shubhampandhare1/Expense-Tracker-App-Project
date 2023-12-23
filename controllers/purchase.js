@@ -32,12 +32,12 @@ exports.updateTransactionStatus = async (req, res, next) => {
     const paymentid = req.body.paymentid;
     if (paymentid != 'payment_failed') {
         try {
-            const p1 = await Order.findOne({ where: { orderid: orderid } }).then(async (order) => {
+            const p1 = Order.findOne({ where: { orderid: orderid } }).then(async (order) => {
                 order.update({ paymentid: paymentid, status: 'SUCCESSFUL' })
             })
-            const p2 = await req.user.update({ isPremiumUser: true })
+            const p2 = req.user.update({ isPremiumUser: true });
 
-            await Promise.all([p1, p2])
+            await Promise.all([p1, p2]);
 
             return res.status(202).json({ success: true, message: 'Transaction Succesful', token: userController.generateAccessToken(req.user.id, true) })
         }
@@ -47,10 +47,10 @@ exports.updateTransactionStatus = async (req, res, next) => {
     }
     else {
         try {
-            const p1 = await Order.findOne({ where: { orderid: orderid } }).then(async (order) => {
+            const p1 = Order.findOne({ where: { orderid: orderid } }).then(async (order) => {
                 await order.update({ paymentid: paymentid, status: 'FAILED' })
             })
-            const p2 = await req.user.update({ isPremiumUser: false })
+            const p2 = req.user.update({ isPremiumUser: false })
 
             await Promise.all([p1, p2])
 
